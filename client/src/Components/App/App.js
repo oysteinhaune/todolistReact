@@ -1,6 +1,8 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Header from '../Header/Header'
+import Footer from '../Footer/Footer'
 
 class App extends React.Component {
   constructor(props) {
@@ -9,7 +11,7 @@ class App extends React.Component {
   }
 
   callAPI() {
-    fetch("http://localhost:9000/testAPI")
+    fetch("http://localhost:9000")
     .then(res => res.text())
     .then(res => this.setState({ apiResponse: res}))
   }
@@ -19,25 +21,42 @@ class App extends React.Component {
   }
 
   render() {
+
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p className="App-intro">
-            {this.state.apiResponse}
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div>
+        < Header />
+
+        <div className="box" id="heading">
+          <h1> {this.state.apiResponse.listTitle} </h1>
+          <p> {this.state.apiResponse.date} </p>
+        </div>
+
+        <div className="box">
+          {
+            this.state.apiResponse.newListItems.forEach((item) => {
+              <div className="item">
+                <form className="item" action="/delete" method="post">
+                  <input type="checkbox" name="checkbox" value={item._id} onChange="this.form.submit()"></input>
+                  <p>{item.name}</p>
+                  <input type="hidden" name="listName" value={item.listTitle}></input>
+                </form>
+              </div>
+          })
+        }
+        {
+        this.state.apiResponse.newListItems.forEach((item) => {
+            <form className="item" action="/" method="post">
+              <input type="text" name="newItem" placeholder="New Item" autocomplete="off" autofocus></input>
+              <button type="submit" name="list" value={item.listTitle}>+</button>
+            </form>
+
+      })
+}
+</div>
+      < Footer />
       </div>
     )
-  }
+}
 }
 
-export default App;
+export { App };
